@@ -1,8 +1,16 @@
 set -e 
 
-  echo "Extracting archive...."
+  echo "Extracting archive Gemfire...."
   pwd
   unzip gemfire/vFabric_GemFire_701_b40235.zip
 
   mkdir ${BOSH_INSTALL_TARGET}/vFabric_GemFire
   cp -a vFabric_GemFire*/* ${BOSH_INSTALL_TARGET}/vFabric_GemFire
+  
+  echo "Extracting archive Service Broker...."
+  pwd
+  tar -xvf gemfire/cf-brokers-0.0.1-SNAPSHOT.tar.gz
+
+  mkdir ${BOSH_INSTALL_TARGET}/gemfire-service-broker
+  cp -a cf-brokers-0.0.1-SNAPSHOT.jar ${BOSH_INSTALL_TARGET}/gemfire-service-broker
+  cp -r lib ${BOSH_INSTALL_TARGET}/gemfire-service-broker

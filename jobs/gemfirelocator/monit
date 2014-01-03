@@ -3,3 +3,8 @@ check process gemfirelocator
   start program "/var/vcap/jobs/gemfirelocator/bin/gemfirelocator_ctl start"
   stop program "/var/vcap/jobs/gemfirelocator/bin/gemfirelocator_ctl stop"
   group vcap
+check process gemfire-service-broker
+  with pidfile /var/vcap/sys/run/gemfire-service-broker/service-broker.pid
+  start program "/var/vcap/jobs/gemfirelocator/bin/service_broker_ctl start"
+  stop program "/var/vcap/jobs/gemfirelocator/bin/service_broker_ctl stop"
+  group vcap

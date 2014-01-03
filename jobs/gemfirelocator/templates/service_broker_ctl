@@ -1,0 +1,53 @@
+#!/bin/bash -e
+
+BIN_DIR=/var/vcap/packages/gemfireserver/gemfire-service-broker
+RUN_DIR=/var/vcap/sys/run/gemfire-service-broker
+LOG_DIR=/var/vcap/sys/log/gemfire-service-broker
+PIDFILE=$RUN_DIR/service-broker.pid
+STDOUTLOG=$LOG_DIR/service-broker.stdout.log
+STDERRLOG=$LOG_DIR/service-broker.stderr.log
+LOCATORIPADDR=<%= spec.networks.send(properties.networks.cluster).ip %>
+
+export JAVA_HOME=/var/vcap/packages/gemfire_jvm7
+export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
+
+# erb template code takes the list of addresses for locators from the deployment properties, finds the entry with the IP address of this node and extracts the port number from within the square brakets
+# Once deployed, the PORT will simply be set to that port number  
+PORT=<%= myaddresspatternstr = spec.networks.send(properties.networks.cluster).ip.gsub('.', '\.') + "\\\[\\\d*\\\]"
+         myaddresspattern = Regexp.new myaddresspatternstr
+         mylocstr = myaddresspattern.match(properties.gemfire.locator.addresses)[0]
+         /\d+/.match(/\[\d*\]/.match(mylocstr)[0])[0] %>
+
+source /var/vcap/packages/common/utils.sh
+
+case $1 in
+
+  start)
+    pid_guard $PIDFILE "gemfire-service-broker"
+
+    mkdir -p $RUN_DIR
+    mkdir -p $LOG_DIR
+
+    cd $BIN_DIR    
+    
+    java -Dlocator.host=$LOCATORIPADDR -Dlocator.port=$PORT -Dspring.profiles.active=gemfire-service-broker -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.JavaServiceBrokerApplication > $STDOUTLOG &  
+    sleep 10
+    ps aux | grep JavaServiceBrokerApplication | grep -v grep | awk '{print $2}' > $PIDFILE
+    while read line           
+	do           
+    	echo "Service Broker PID: $line"     
+	done <$PIDFILE  
+    
+    ;;
+
+  stop)
+    kill_and_wait $PIDFILE
+
+    ;;
+
+  *)
+    echo "Usage: service_broker_ctl {start|stop}"
+
+    ;;
+
+esac

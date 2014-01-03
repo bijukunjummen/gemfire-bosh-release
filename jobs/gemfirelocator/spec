@@ -4,6 +4,7 @@ name: gemfirelocator
 templates:
   gemfirelocator_ctl: bin/gemfirelocator_ctl
   syslog_forwarder.conf.erb: config/syslog_forwarder.conf
+  service_broker_ctl: bin/service_broker_ctl
 
 packages:
 - gemfireserver
