@@ -113,7 +113,7 @@ The installation of Gemfire via this BOSH release generally follows the same ste
     packages/gemfire_jvm7/spec
     packages/gemfire_jvm7/packaging
     packages/gemfireserver/spec
-    packages/gemfireserver/packaing
+    packages/gemfireserver/packaging
     ``` 
 
 3. Create the BOSH release
