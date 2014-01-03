@@ -1,15 +1,15 @@
 ---
-name: gemfire-01
-director_uuid: d235f4e9-fc81-4924-b331-3712f16611ec
+name: gemfire
+director_uuid: 53e56169-85eb-428f-b2ef-04caf08525bb
 release:
-  name: boshgem
+  name: cf-gemfire
   version: latest
 
 compilation:
   workers: 2
   cloud_properties:
-    ram: 8192
-    disk: 8096
+    ram: 2048
+    disk: 4096
     cpu: 4
   network: gf1
   reuse_compilation_vms: true 
@@ -152,7 +152,7 @@ resource_pools:
     version: latest
    cloud_properties:
     ram: 768
-    disk: 8192
+    disk: 4096
     cpu: 2
 
 jobs:
@@ -160,7 +160,7 @@ jobs:
    template: gemfirelocator
    instances: 1
    resource_pool: infrastructure1
-   persistent_disk: 16384
+   persistent_disk: 4096
    networks:
    - name: gf1
      static_ips:
@@ -170,7 +170,7 @@ jobs:
    template: gemfireserver
    instances: 2
    resource_pool: infrastructure1
-   persistent_disk: 16384
+   persistent_disk: 4096
    networks:
    - name: gf1
      static_ips:
@@ -180,17 +180,12 @@ jobs:
 properties:
   gemfire:
     locator:
-      addresses: 10.244.0.102[55221]
+      addresses: 10.244.0.102[10334]
       archivewd: true
     cacheserver:
       port: 55001
       archivewd: true
     license: xxxx
-
-  nfs_server:
-    address: 10.13.219.89
-    network: 10.13.219.0/24
-    export_dir: /var/vcap/store/shared
 
   networks:
     cluster: gf1
