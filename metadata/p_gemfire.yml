@@ -1,6 +1,6 @@
 ---
 name: p-gemfire
-product_version: 1.0.0.9
+product_version: 1.0.0.0
 metadata_version: 1.0
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
@@ -9,8 +9,8 @@ stemcell:
   md5: e1cbb680bee9eda8ba7e81ff0b3421a8
 releases:
   - name: cf-gemfire
-    version: 0.19-dev
-    file: cf-gemfire-0.19-dev.tgz
+    version: 0.45-dev
+    file: cf-gemfire-0.45-dev.tgz
     md5: cdada1f6fc2c717f317444e64ab530e8
 provides_product_versions:
   - name: p-gemfire
