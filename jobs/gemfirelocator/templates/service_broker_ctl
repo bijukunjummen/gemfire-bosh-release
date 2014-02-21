@@ -13,10 +13,7 @@ export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
 # erb template code takes the list of addresses for locators from the deployment properties, finds the entry with the IP address of this node and extracts the port number from within the square brakets
 # Once deployed, the PORT will simply be set to that port number  
-PORT=<%= myaddresspatternstr = spec.networks.send(properties.networks.cluster).ip.gsub('.', '\.') + "\\\[\\\d*\\\]"
-         myaddresspattern = Regexp.new myaddresspatternstr
-         mylocstr = myaddresspattern.match(properties.gemfire.locator.addresses)[0]
-         /\d+/.match(/\[\d*\]/.match(mylocstr)[0])[0] %>
+PORT=<%= properties.gemfire_locator.port %>
 
 source /var/vcap/packages/common/utils.sh
 
@@ -27,7 +24,6 @@ case $1 in
 
     mkdir -p $RUN_DIR
     mkdir -p $LOG_DIR
-
     cd $BIN_DIR    
     
     java -Dlocator.host=$LOCATORIPADDR -Dlocator.port=$PORT -Dspring.profiles.active=gemfire-service-broker -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.JavaServiceBrokerApplication > $STDOUTLOG &  

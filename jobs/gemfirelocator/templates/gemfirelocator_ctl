@@ -2,27 +2,35 @@
 
 BIN_DIR=/var/vcap/packages/gemfireserver/vFabric_GemFire/bin
 LIB_DIR=/var/vcap/packages/gemfireserver/vFabric_GemFire/lib
-RUN_DIR=/var/vcap/sys/run/gemfireserver
-LOG_DIR=/var/vcap/sys/log/gemfireserver
+RUN_DIR=/var/vcap/sys/run/gemfirelocator
+LOG_DIR=/var/vcap/sys/log/gemfirelocator
 PIDFILE=$RUN_DIR/gemfirelocator.pid
 STDOUTLOG=$LOG_DIR/gemfirelocator.stdout.log
 STDERRLOG=$LOG_DIR/gemfirelocator.stderr.log
-LOCATORNAME=locatorsingleton<%= spec.index %>
+LOCATORNAME=locator<%= spec.index %>
 LOCATORIPADDR=<%= spec.networks.send(properties.networks.cluster).ip %>
 
 export JAVA_HOME=/var/vcap/packages/gemfire_jvm7
 export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
-# erb template code takes the list of addresses for locators from the deployment properties, finds the entry with the IP address of this node and extracts the port number from within the square brakets
-# Once deployed, the PORT will simply be set to that port number  
-PORT=<%= myaddresspatternstr = spec.networks.send(properties.networks.cluster).ip.gsub('.', '\.') + "\\\[\\\d*\\\]"
-         myaddresspattern = Regexp.new myaddresspatternstr
-         mylocstr = myaddresspattern.match(properties.gemfire.locator.addresses)[0]
-         /\d+/.match(/\[\d*\]/.match(mylocstr)[0])[0] %>
+# erb template code takes the list of addresses for locators from the deployment properties
+PORT=<%= properties.gemfire_locator.port %>
+IPS="<%= properties.gemfire_locator.server_ips %>"
+<% ip_str = "" %>
+<% properties.gemfire_locator.server_ips.each_with_index do | ip, index | %>
+<%   ip_port = ip + "[" + properties.gemfire_locator.port.to_s + "]" %>
+<%   if index > 0 %>
+<%     ip_str = ip_str + "," %>
+<%   end %>
+<%   ip_str = ip_str + ip_port %>
+<% end %>
+LOCATOR_STR=<%=  ip_str %> 
+echo "Local Locator ip: $LOCATORIPADDR"
+echo "Locator port: $PORT"
+echo "Locator IPS: $IPS"  
+echo "Full locator string: $LOCATOR_STR"
 
-LOCATORS=<%= properties.gemfire.locator.addresses.gsub(' ','') %>
-
-source /var/vcap/packages/common/utils.sh
+source /var/vcap/packages/common/utils.sh  
 
 case $1 in
 
@@ -31,28 +39,15 @@ case $1 in
 
     mkdir -p $RUN_DIR
     mkdir -p $LOG_DIR
-
     cd $LOG_DIR
 
     # (re)move any existing directory that might contain stale state - only support adding an fresh node to the cluster
     if ls $LOCATORNAME &> /dev/null
     then
-      if [ <%= properties.gemfire.locator.archivewd %> == true ]
-      then
-        if ls "$LOCATORNAME"_* &> /dev/null
-        then
-          cur=$(ls -d "$LOCATORNAME"_* | sed s/"$LOCATORNAME"_// | sort -g | tail -1)
-        else
-          cur=0
-        fi
-        next=$(($cur + 1))
-        mv  $LOCATORNAME "$LOCATORNAME"_$next
-      else
-        rm -rf $LOG_DIR/$LOCATORNAME
-      fi
+      rm -rf $LOG_DIR/$LOCATORNAME
     fi
 
-    gfsh start locator --name=$LOCATORNAME --force=true --mcast-port=0 --J=-Dgemfire.bind-address=$LOCATORIPADDR --locators=$LOCATORS --port=$PORT --connect=false | grep "Process ID" | sed s/Process\ ID:\ // > $PIDFILE
+    gfsh start locator --name=$LOCATORNAME --force=true --mcast-port=0 --J=-Dgemfire.bind-address=$LOCATORIPADDR --locators=$LOCATOR_STR --port=$PORT --connect=false | grep "Process ID" | sed s/Process\ ID:\ // > $PIDFILE
     ;;
 
   stop)

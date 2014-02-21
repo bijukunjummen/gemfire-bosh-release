@@ -1,6 +1,6 @@
 ---
 name: gemfire
-director_uuid: 53e56169-85eb-428f-b2ef-04caf08525bb
+director_uuid: 51abcb52-334e-44a8-8f3d-00d2c271919e
 release:
   name: cf-gemfire
   version: latest
@@ -146,9 +146,9 @@ networks:
 resource_pools:
  - name: infrastructure1
    network: gf1
-   size: 3
+   size: 4
    stemcell:
-    name: bosh-stemcell
+    name: bosh-warden-boshlite-ubuntu
     version: latest
    cloud_properties:
     ram: 768
@@ -158,13 +158,14 @@ resource_pools:
 jobs:
  - name: gemfirelocator
    template: gemfirelocator
-   instances: 1
+   instances: 2
    resource_pool: infrastructure1
    persistent_disk: 4096
    networks:
    - name: gf1
      static_ips:
      - 10.244.0.102
+     - 10.244.0.106
 
  - name: gemfireserver
    template: gemfireserver
@@ -178,14 +179,21 @@ jobs:
      - 10.244.0.114
 
 properties:
-  gemfire:
-    locator:
-      addresses: 10.244.0.102[10334]
-      archivewd: true
-    cacheserver:
-      port: 55001
-      archivewd: true
-    license: xxxx
+  gemfire_locator:
+    networks:
+      apps: gf1
+    server_ips:
+      - 10.244.0.102
+      - 10.244.0.106
+    port: 10334
+  gemfire_server:
+    networks:
+      apps: gf1
+    server_ips:
+      - 10.244.0.110
+      - 10.244.0.114
+    port: 55001
+    memory: 512
 
   networks:
     cluster: gf1

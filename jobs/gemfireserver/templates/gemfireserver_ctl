@@ -12,8 +12,22 @@ CACHESERVERNAME=gemfire-<%= spec.index %>
 export JAVA_HOME=/var/vcap/packages/gemfire_jvm7
 export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
-LOCATORS=<%= properties.gemfire.locator.addresses.gsub(' ','') %>
-FIRSTLOCATOR=<%= properties.gemfire.locator.addresses.gsub(' ','').split(',')[0] %>
+PORT=<%= properties.gemfire_server.port %>
+HEAP=<%= properties.gemfire_server.memory.to_s + "m" %>
+IPS="<%= properties.gemfire_locator.server_ips %>"
+<% ip_str = "" %>
+<% properties.gemfire_locator.server_ips.each_with_index do | ip, index | %>
+<%   ip_port = ip + "[" + properties.gemfire_locator.port.to_s + "]" %>
+<%   if index > 0 %>
+<%     ip_str = ip_str + "," %>
+<%   end %>
+<%   ip_str = ip_str + ip_port %>
+<% end %>
+LOCATOR_STR=<%=  ip_str %>
+echo "Server port: $PORT"
+echo "Server heap: $HEAP"
+echo "Locator IPS: $IPS"  
+echo "Full locator string: $LOCATOR_STR" 
 
 source /var/vcap/packages/common/utils.sh
 
@@ -24,10 +38,9 @@ case $1 in
 
     mkdir -p $RUN_DIR
     mkdir -p $LOG_DIR
-
     cd $BIN_DIR
 
-	java -Dlocators=$LOCATORS -Dgemfire-name=$CACHESERVERNAME -Dspring.profiles.active=gemfire-server -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.gemfire.GemfireServer > $STDOUTLOG &
+	java -Xms$HEAP -Xmx$HEAP -Dlocators=$LOCATOR_STR -Dtcp-port=$PORT -Dgemfire-name=$CACHESERVERNAME -Dspring.profiles.active=gemfire-server -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.gemfire.GemfireServer > $STDOUTLOG &
 	sleep 10
 	ps aux | grep GemfireServer | grep -v grep | awk '{print $2}' > $PIDFILE
     while read line           
