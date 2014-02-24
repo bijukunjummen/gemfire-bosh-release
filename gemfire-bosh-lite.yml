@@ -185,16 +185,17 @@ properties:
     server_ips:
       - 10.244.0.102
       - 10.244.0.106
-    port: 10334
+    locator_port: 10334
   gemfire_server:
     networks:
       apps: gf1
     server_ips:
       - 10.244.0.110
       - 10.244.0.114
-    port: 55001
+    server_port: 55001
     memory: 512
-
-  networks:
-    cluster: gf1
+    locator_ips:
+      - 10.244.0.102
+      - 10.244.0.106
+    locator_port: 10334
 

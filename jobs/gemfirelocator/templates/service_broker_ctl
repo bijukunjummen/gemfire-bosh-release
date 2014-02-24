@@ -6,14 +6,14 @@ LOG_DIR=/var/vcap/sys/log/gemfire-service-broker
 PIDFILE=$RUN_DIR/service-broker.pid
 STDOUTLOG=$LOG_DIR/service-broker.stdout.log
 STDERRLOG=$LOG_DIR/service-broker.stderr.log
-LOCATORIPADDR=<%= spec.networks.send(properties.networks.cluster).ip %>
+LOCATORIPADDR=<%= spec.networks.send(properties.gemfire_locator.networks.apps).ip %>
 
 export JAVA_HOME=/var/vcap/packages/gemfire_jvm7
 export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
 # erb template code takes the list of addresses for locators from the deployment properties, finds the entry with the IP address of this node and extracts the port number from within the square brakets
 # Once deployed, the PORT will simply be set to that port number  
-PORT=<%= properties.gemfire_locator.port %>
+PORT=<%= properties.gemfire_locator.locator_port %>
 
 source /var/vcap/packages/common/utils.sh
 

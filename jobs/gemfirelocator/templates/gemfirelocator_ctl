@@ -8,17 +8,17 @@ PIDFILE=$RUN_DIR/gemfirelocator.pid
 STDOUTLOG=$LOG_DIR/gemfirelocator.stdout.log
 STDERRLOG=$LOG_DIR/gemfirelocator.stderr.log
 LOCATORNAME=locator<%= spec.index %>
-LOCATORIPADDR=<%= spec.networks.send(properties.networks.cluster).ip %>
+LOCATORIPADDR=<%= spec.networks.send(properties.gemfire_locator.networks.apps).ip %>
 
 export JAVA_HOME=/var/vcap/packages/gemfire_jvm7
 export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
 # erb template code takes the list of addresses for locators from the deployment properties
-PORT=<%= properties.gemfire_locator.port %>
+PORT=<%= properties.gemfire_locator.locator_port %>
 IPS="<%= properties.gemfire_locator.server_ips %>"
 <% ip_str = "" %>
 <% properties.gemfire_locator.server_ips.each_with_index do | ip, index | %>
-<%   ip_port = ip + "[" + properties.gemfire_locator.port.to_s + "]" %>
+<%   ip_port = ip + "[" + properties.gemfire_locator.locator_port.to_s + "]" %>
 <%   if index > 0 %>
 <%     ip_str = ip_str + "," %>
 <%   end %>

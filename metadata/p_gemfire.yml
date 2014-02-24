@@ -1,6 +1,6 @@
 ---
 name: p-gemfire
-product_version: 1.0.0.0
+product_version: 0.0.0.3
 metadata_version: 1.0
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
@@ -9,9 +9,9 @@ stemcell:
   md5: e1cbb680bee9eda8ba7e81ff0b3421a8
 releases:
   - name: cf-gemfire
-    version: 0.45-dev
-    file: cf-gemfire-0.45-dev.tgz
-    md5: cdada1f6fc2c717f317444e64ab530e8
+    version: 0.5-dev
+    file: cf-gemfire-0.5-dev.tgz
+    md5: f0b379720a37f44ccb083e2b89f82172
 provides_product_versions:
   - name: p-gemfire
     version: 1.0.0.0
@@ -33,7 +33,7 @@ job_types:
         type: integer
         label: RAM
         configurable: true
-        default: 4_096
+        default: 2_048
         constraints:
           min: 1_024
 
@@ -57,7 +57,7 @@ job_types:
         type: integer
         label: CPU
         configurable: true
-        default: 2
+        default: 1
         constraints:
           min: 1
 
@@ -69,7 +69,7 @@ job_types:
         type: integer
         label: Instances
         configurable: true
-        default: 1
+        default: 2
         constraints:
           min: 1
 
@@ -80,8 +80,8 @@ job_types:
         default:
           identity: vcap
 
-      - name: port
-        type: integer
+      - name: locator_port
+        type: port
         label: Gemfire Locator Port
         configurable: true
         optional: false
@@ -92,7 +92,7 @@ job_types:
         networks:
           apps: default
         server_ips: (( .gemfire-locator.ips ))
-        port: (( .gemfire-locator.port ))
+        locator_port: (( .gemfire-locator.locator_port.value ))
 
   - name: gemfire-server
     label: Gemfire Server
@@ -105,7 +105,7 @@ job_types:
         type: integer
         label: RAM
         configurable: true
-        default: 4_096
+        default: 2_048
         constraints:
           min: 1_024
 
@@ -129,7 +129,7 @@ job_types:
         type: integer
         label: CPU
         configurable: true
-        default: 2
+        default: 1
         constraints:
           min: 1
 
@@ -152,8 +152,8 @@ job_types:
         default:
           identity: vcap
 
-      - name: port
-        type: integer
+      - name: server_port
+        type: port
         label: Gemfire Server Port
         configurable: true
         optional: false
@@ -171,8 +171,10 @@ job_types:
         networks:
           apps: default
         server_ips: (( .gemfire-server.ips ))
-        port: (( .gemfire-server.port))
-        memory: (( .gemfire-server.jvm_memory))
+        server_port: (( .gemfire-server.server_port.value ))
+        memory: (( .gemfire-server.jvm_memory.value ))
+        locator_ips: (( .gemfire-locator.ips ))
+        locator_port: (( .gemfire-locator.locator_port.value ))
 
   - name: compilation
     label: compilation
@@ -190,7 +192,7 @@ job_types:
         type: integer
         label: Ephemeral Disk
         configurable: true
-        default: 2_048
+        default: 4_096
 
       - name: persistent_disk
         type: integer
