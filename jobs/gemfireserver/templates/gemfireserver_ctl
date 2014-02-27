@@ -14,6 +14,12 @@ export PATH=$PATH:$JAVA_HOME/bin:$BIN_DIR
 
 PORT=<%= properties.gemfire_server.server_port %>
 HEAP=<%= properties.gemfire_server.memory.to_s + "m" %>
+
+<% lic_str = "" %>
+<% if properties.gemfire_server.license != nil %>
+<%   lic_str = properties.gemfire_server.license.to_s %>
+<% end %>
+LICENSE="<%= lic_str %>"
 IPS="<%= properties.gemfire_server.locator_ips %>"
 <% ip_str = "" %>
 <% properties.gemfire_server.locator_ips.each_with_index do | ip, index | %>
@@ -27,6 +33,7 @@ LOCATOR_STR=<%=  ip_str %>
 
 echo "Server port: $PORT"
 echo "Server heap: $HEAP"
+echo "Server License: $LICENSE"
 echo "Locator IPS: $IPS"  
 echo "Full locator string: $LOCATOR_STR" 
 
@@ -41,7 +48,7 @@ case $1 in
     mkdir -p $LOG_DIR
     cd $BIN_DIR
 
-	java -Xms$HEAP -Xmx$HEAP -Dlocators=$LOCATOR_STR -Dtcp-port=$PORT -Dgemfire-name=$CACHESERVERNAME -Dspring.profiles.active=gemfire-server -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.gemfire.GemfireServer > $STDOUTLOG &
+	java -Xms$HEAP -Xmx$HEAP -Dgemfire-license-data-management=$LICENSE -Dlocators=$LOCATOR_STR -Dtcp-port=$PORT -Dgemfire-name=$CACHESERVERNAME -Dspring.profiles.active=gemfire-server -Djava.net.preferIPv4Stack=true -cp cf-brokers-0.0.1-SNAPSHOT.jar com.pivotal.cloudfoundry.service.broker.gemfire.GemfireServer > $STDOUTLOG &
 	sleep 10
 	ps aux | grep GemfireServer | grep -v grep | awk '{print $2}' > $PIDFILE
     while read line           
