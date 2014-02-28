@@ -1,6 +1,6 @@
 ---
 name: p-gemfire
-product_version: 0.0.0.3
+product_version: 0.0.0.7
 metadata_version: 1.0
 stemcell:
   name: bosh-vsphere-esxi-ubuntu
@@ -9,9 +9,9 @@ stemcell:
   md5: e1cbb680bee9eda8ba7e81ff0b3421a8
 releases:
   - name: cf-gemfire
-    version: 0.5-dev
-    file: cf-gemfire-0.5-dev.tgz
-    md5: f0b379720a37f44ccb083e2b89f82172
+    version: 0.9-dev
+    file: cf-gemfire-0.9-dev.tgz
+    md5: 3babdff9166aa98608f6b5efa889db56
 provides_product_versions:
   - name: p-gemfire
     version: 1.0.0.0
@@ -166,6 +166,12 @@ job_types:
         optional: false
         default: 1_024
 
+      - name: license
+        type: string
+        label: Gemfire Server License Key
+        configurable: true
+        optional: true
+
     manifest: |
       gemfire_server:
         networks:
@@ -175,6 +181,7 @@ job_types:
         memory: (( .gemfire-server.jvm_memory.value ))
         locator_ips: (( .gemfire-locator.ips ))
         locator_port: (( .gemfire-locator.locator_port.value ))
+        license: (( .gemfire-server.license.value ))
 
   - name: compilation
     label: compilation
