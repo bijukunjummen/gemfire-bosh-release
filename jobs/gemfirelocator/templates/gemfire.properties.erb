@@ -1,0 +1,12 @@
+bind-address=<%= spec.networks.send(properties.gemfire_locator.networks.apps).ip %>
+<% ip_str = "" %>
+<% properties.gemfire_locator.server_ips.each_with_index do | ip, index | %>
+<%   ip_port = ip + "[" + properties.gemfire_locator.locator_port.to_s + "]" %>
+<%   if index > 0 %>
+<%     ip_str = ip_str + "," %>
+<%   end %>
+<%   ip_str = ip_str + ip_port %>
+<% end %>
+locators=<%=  ip_str %>
+mcast-port=0
+port=<%= properties.gemfire_locator.locator_port %>

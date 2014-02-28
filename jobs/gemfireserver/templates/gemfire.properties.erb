@@ -1,0 +1,16 @@
+<% ip_str = "" %>
+<% properties.gemfire_server.locator_ips.each_with_index do | ip, index | %>
+<%   ip_port = ip + "[" + properties.gemfire_server.locator_port.to_s + "]" %>
+<%   if index > 0 %>
+<%     ip_str = ip_str + "," %>
+<%   end %>
+<%   ip_str = ip_str + ip_port %>
+<% end %>
+locators=<%=  ip_str %>
+tcp-port=<%= properties.gemfire_server.server_port %>
+name=gemfire-<%= spec.index %>
+<% lic_str = "" %>
+<% if properties.gemfire_server.license != nil %>
+<%   lic_str = properties.gemfire_server.license.to_s %>
+<% end %>
+license-data-management=<%= lic_str %>

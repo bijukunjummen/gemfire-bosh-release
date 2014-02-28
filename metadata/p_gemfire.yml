@@ -83,6 +83,7 @@ job_types:
       - name: locator_port
         type: port
         label: Gemfire Locator Port
+        description: This is the port on which the Gemfire Locator will listen.
         configurable: true
         optional: false
         default: 10_334
@@ -155,13 +156,15 @@ job_types:
       - name: server_port
         type: port
         label: Gemfire Server Port
+        description: This is the port on which the Gemfire Server will listen.
         configurable: true
         optional: false
         default: 55_001
 
       - name: jvm_memory
         type: integer
-        label: Gemfire Server JVM Memory Allocation
+        label: Gemfire Server JVM Memory
+        description: This is the amount of memory that will be allocated to the Gemfire Data Management Server JVM.  Make sure that this value is less than the amount of RAM allocated to the Gemfire Server resource VM.
         configurable: true
         optional: false
         default: 1_024
@@ -169,6 +172,7 @@ job_types:
       - name: license
         type: string
         label: Gemfire Server License Key
+        description: This is a comma-delimted list of the license key(s) for the Gemfire Server.  If you are using the default evaluation license leave this property blank.  If you are using the default evaluation license, do no specify more than 3 Gemfire Server resource instances.
         configurable: true
         optional: true
 
@@ -181,7 +185,7 @@ job_types:
         memory: (( .gemfire-server.jvm_memory.value ))
         locator_ips: (( .gemfire-locator.ips ))
         locator_port: (( .gemfire-locator.locator_port.value ))
-        license: (( .gemfire-server.license.value ))
+        license: "(( .gemfire-server.license.value ))"
 
   - name: compilation
     label: compilation

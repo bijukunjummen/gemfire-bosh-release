@@ -1,6 +1,6 @@
 ---
 name: gemfire
-director_uuid: 51abcb52-334e-44a8-8f3d-00d2c271919e
+director_uuid: f0588560-08a8-4ae2-914a-b9e8b12d9303
 release:
   name: cf-gemfire
   version: latest
@@ -198,4 +198,5 @@ properties:
       - 10.244.0.102
       - 10.244.0.106
     locator_port: 10334
+    license:
 
