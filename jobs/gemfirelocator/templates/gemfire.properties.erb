@@ -10,3 +10,5 @@ bind-address=<%= spec.networks.send(properties.gemfire_locator.networks.apps).ip
 locators=<%=  ip_str %>
 mcast-port=0
 port=<%= properties.gemfire_locator.locator_port %>
+log-level=info
+jmx-manager-start=true
