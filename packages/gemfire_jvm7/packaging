@@ -17,7 +17,8 @@ tar xzf $archive
 if [[ -d bin && `bin/java -version 2>&1` =~ "Java HotSpot" && $? == 0 ]]; then
   cp -a * ${BOSH_INSTALL_TARGET}
 #  cp java/tools.jar ${BOSH_INSTALL_TARGET}/lib
+
 else
-  echo "JVM is not properly packaged"
+  echo "JVM is not properly packaged."
   exit 1
 fi

@@ -16,7 +16,6 @@ HEAP=<%= properties.gemfire_server.memory.to_s + "m" %>
 source /var/vcap/packages/common/utils.sh
 
 case $1 in
-
   start)
     pid_guard $PIDFILE "gemfire"
 
