@@ -6,6 +6,7 @@ templates:
   gemfire.properties.erb: bin/gemfire.properties
   syslog_forwarder.conf.erb: config/syslog_forwarder.conf
   service_broker_ctl: bin/service_broker_ctl
+  profile.erb: /home/vcap/.profile
 
 packages:
 - gemfireserver
