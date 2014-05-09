@@ -2,10 +2,10 @@ set -e
 
   echo "Extracting archive Gemfire...."
   pwd
-  unzip gemfire/vFabric_GemFire_701_b40235.zip
+  unzip gemfire/Pivotal_GemFire_7021_b46061.zip
 
-  mkdir ${BOSH_INSTALL_TARGET}/vFabric_GemFire
-  cp -a vFabric_GemFire*/* ${BOSH_INSTALL_TARGET}/vFabric_GemFire
+  mkdir ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
+  cp -a Pivotal_GemFire*/* ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
   
   echo "Extracting archive Service Broker...."
   pwd
