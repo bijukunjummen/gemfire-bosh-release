@@ -2,15 +2,15 @@ set -e
 
   echo "Extracting archive Gemfire...."
   pwd
-  unzip gemfire/Pivotal_GemFire_7021_b46061.zip
+  unzip gemfire/Pivotal_GemFire_7.zip
 
   mkdir ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
   cp -a Pivotal_GemFire*/* ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
   
   echo "Extracting archive Service Broker...."
   pwd
-  tar -xvf gemfire/cf-brokers-0.0.1-SNAPSHOT.tar.gz
+  tar -xvf gemfire/cf-brokers.tar.gz
 
   mkdir ${BOSH_INSTALL_TARGET}/gemfire-service-broker
-  cp -a cf-brokers-0.0.1-SNAPSHOT.jar ${BOSH_INSTALL_TARGET}/gemfire-service-broker
+  cp -a cf-brokers.jar ${BOSH_INSTALL_TARGET}/gemfire-service-broker
   cp -r lib ${BOSH_INSTALL_TARGET}/gemfire-service-broker
