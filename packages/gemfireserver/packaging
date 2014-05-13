@@ -1,11 +1,22 @@
 set -e 
 
-  echo "Extracting archive Gemfire...."
+  echo "Extracting archive GemFire...."
   pwd
   unzip gemfire/Pivotal_GemFire_7.zip
-
+  
+  ls -l
+  
+  GEMFIRE_INSTALL_DIR=$(find . -type d -name 'Pivotal_GemFire*' | head -n1)
+  
   mkdir ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
-  cp -a Pivotal_GemFire*/* ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
+  cp -a $GEMFIRE_INSTALL_DIR/* ${BOSH_INSTALL_TARGET}/Pivotal_GemFire
+  
+  TOMCAT_GEMFIRE_MODULE_ZIP=$(find . -type f -name 'Pivotal_GemFire_Modules*Tomcat.zip' | head -n1)
+  
+  echo "Extracting archive Tomcat GemFire Module...."
+  pwd
+  unzip $TOMCAT_GEMFIRE_MODULE_ZIP -d tomcat_gemfire_module
+  cp -r tomcat_gemfire_module/lib ${BOSH_INSTALL_TARGET}/Pivotal_GemFire/lib
   
   echo "Extracting archive Service Broker...."
   pwd
