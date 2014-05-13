@@ -16,7 +16,7 @@ set -e
   echo "Extracting archive Tomcat GemFire Module...."
   pwd
   unzip $TOMCAT_GEMFIRE_MODULE_ZIP -d tomcat_gemfire_module
-  cp -r tomcat_gemfire_module/lib ${BOSH_INSTALL_TARGET}/Pivotal_GemFire/lib
+  cp -a tomcat_gemfire_module/lib/* ${BOSH_INSTALL_TARGET}/Pivotal_GemFire/lib
   
   echo "Extracting archive Service Broker...."
   pwd
